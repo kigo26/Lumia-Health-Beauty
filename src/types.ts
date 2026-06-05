@@ -102,3 +102,24 @@ export interface ChatMessage {
   text: string;
   createdAt: string;
 }
+
+export interface Review {
+  id: string;
+  authorId: string;
+  authorName: string;
+  authorPhoto?: string;
+  targetId: string;
+  targetType: 'provider' | 'center';
+  bookingId?: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface Ritual {
+  id: string;
+  name: string;
+  duration: string;
+  price: number;
+  benefits: string[];
+}

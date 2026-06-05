@@ -1,6 +1,6 @@
 {
-  "name": "Lumia Health & Beauty",
-  "description": "A premium wellness marketplace connecting clients with verified providers and certified luxury wellness centers.",
+  "name": "Lumia Beauty & Health Spa",
+  "description": "A luxury spa and massage sanctuary platform featuring a deep teal aesthetic, professional restoration rituals, the exclusive Lumia Signature Collection, and comprehensive wellness milestone tracking.",
   "requestFramePermissions": ["geolocation"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

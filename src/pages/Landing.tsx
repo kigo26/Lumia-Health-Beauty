@@ -2,129 +2,421 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { 
   ShieldCheck, Sparkles, HeartPulse, ArrowUpRight, 
-  Award, Globe, CheckCircle2, ChevronRight, Zap
+  Award, Globe, CheckCircle2, ChevronRight, Zap,
+  Menu, X, Search, User, ChevronDown
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { cn } from '../lib/utils';
+import { WellnessAssessment } from '../components/WellnessAssessment';
+import { TestimonialCarousel } from '../components/TestimonialCarousel';
 
-const SectionHeader = ({ subtitle, title, description, dark = false }: { subtitle: string, title: string, description?: string, dark?: boolean }) => (
-  <div className="mb-16 md:mb-24 text-center">
-    <div className={`inline-block px-4 py-1.5 rounded-full border ${dark ? 'border-white/10 bg-white/5 text-lumia-gold' : 'border-lumia-emerald/10 bg-lumia-emerald/5 text-lumia-emerald'} text-[10px] font-bold uppercase tracking-[0.5em] mb-8`}>
-      {subtitle}
-    </div>
-    <h2 className={`text-4xl md:text-7xl font-serif italic mb-8 tracking-tight ${dark ? 'text-white' : 'text-lumia-charcoal'}`}>
-      {title}
-    </h2>
-    {description && (
-      <p className={`text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed ${dark ? 'text-white/40' : 'text-lumia-charcoal/40'}`}>
-        {description}
-      </p>
-    )}
-  </div>
+import { useAuth } from '../contexts/AuthContext';
+import { logout } from '../lib/firebase';
+
+import spaDetail from '../assets/images/spa_detail_1780691428480.png';
+import spaFacial from '../assets/images/spa_facial_1780691447919.png';
+import spaCandle from '../assets/images/spa_candle_1780691461660.png';
+import spaBackground from '../assets/images/spa_background_1780691676574.png';
+
+const MoodCard = ({ children, className, delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.98 }}
+    whileInView={{ opacity: 1, scale: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+    className={cn("relative rounded-[2rem] overflow-hidden group", className)}
+  >
+    {children}
+  </motion.div>
 );
 
 export const Landing = () => {
+  const { user, profile } = useAuth();
+
   return (
-    <div className="min-h-screen bg-lumia-bg selection:bg-lumia-gold/20">
-      {/* 1. HERO SECTION - Ivory (#FAF9F6) */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center bg-lumia-bg overflow-hidden p-6">
-        <div className="absolute inset-0 luxury-gradient opacity-30 pointer-events-none" />
-        
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] bg-[radial-gradient(circle_at_center,_rgba(15,138,112,0.03)_0%,_transparent_70%)] pointer-events-none"
-        />
+    <div className="min-h-screen font-sans antialiased text-tranquil-text selection:bg-tranquil-teal/10" style={{ backgroundImage: `url(${spaBackground})`, backgroundAttachment: 'fixed', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      {/* Announcement Bar */}
+      <div className="bg-tranquil-teal text-white py-2 text-center text-[10px] md:text-xs font-medium tracking-wider">
+        Relax, rejuvenate, and restore — enjoy exclusive massage deals this week only!
+      </div>
 
-        <nav className="absolute top-12 left-0 right-0 px-12 flex justify-between items-center z-50">
-          <Link to="/" className="text-xl font-serif italic text-lumia-charcoal tracking-tight hover:text-lumia-emerald transition-colors">
-            Lumia.
+      {/* Header */}
+      <nav className="bg-white border-b border-black/5 px-4 md:px-12 py-4">
+        <div className="max-w-[1800px] mx-auto flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="text-xl md:text-2xl font-serif text-tranquil-teal tracking-tight font-medium">
+            Lumia Beauty & Health Spa
           </Link>
-          <div className="flex gap-12 text-[10px] font-bold uppercase tracking-[0.4em] text-lumia-charcoal/40">
-            <Link to="/explore" className="hover:text-lumia-emerald transition-colors">Sanctuaries</Link>
-            <Link to="/wallet" className="hover:text-lumia-emerald transition-colors">Ecosystem</Link>
+
+          {/* Menu */}
+          <div className="hidden lg:flex items-center gap-1 bg-tranquil-teal p-1 rounded-md">
+            <Link to="/" className="bg-white text-tranquil-teal px-6 py-2 rounded-sm text-[11px] font-bold uppercase tracking-wider">Home</Link>
+            <Link to="/explore" className="text-white hover:bg-white/10 px-6 py-2 rounded-sm text-[11px] font-bold uppercase tracking-wider transition-colors">Blog</Link>
+            <Link to="/" className="text-white hover:bg-white/10 px-6 py-2 rounded-sm text-[11px] font-bold uppercase tracking-wider transition-colors">Page</Link>
+            <Link to="/" className="text-white hover:bg-white/10 px-6 py-2 rounded-sm text-[11px] font-bold uppercase tracking-wider transition-colors">Contact</Link>
+            <Link to="/" className="text-white hover:bg-white/10 px-6 py-2 rounded-sm text-[11px] font-bold uppercase tracking-wider transition-colors">Testimonial</Link>
+            <Link to="/" className="text-white hover:bg-white/10 px-6 py-2 rounded-sm text-[11px] font-bold uppercase tracking-wider transition-colors">Team</Link>
+            <Link to="/" className="text-white hover:bg-white/10 px-6 py-2 rounded-sm text-[11px] font-bold uppercase tracking-wider transition-colors">Service</Link>
           </div>
-        </nav>
 
-        <motion.main 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-20 flex flex-col items-center text-center max-w-7xl pt-20"
-        >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-lumia-emerald/10 bg-white shadow-sm text-[9px] font-bold tracking-[0.5em] text-lumia-emerald mb-12 uppercase"
-          >
-            <Sparkles className="w-3 h-3" /> LUMIA HEALTH & BEAUTY
-          </motion.div>
-
-          <h1 className="text-6xl md:text-[10rem] font-serif italic leading-[0.9] tracking-tighter mb-16 max-w-6xl">
-            <span className="text-lumia-emerald">A Sanctuary</span> <br />
-            <span className="text-lumia-gold">In Every Setting.</span>
-          </h1>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col items-center gap-12"
-          >
-            <Link 
-              to="/explore" 
-              className="px-16 py-7 bg-lumia-gold text-white rounded-full font-bold uppercase text-[11px] tracking-[0.5em] shadow-[0_12px_40px_rgba(212,175,55,0.25)] hover:bg-lumia-gold-hover hover:scale-105 hover:shadow-[0_20px_50px_rgba(212,175,55,0.35)] transition-all active:scale-95"
-            >
-              Begin Your Ritual
-            </Link>
-
-            <p className="text-[10px] text-lumia-charcoal/30 font-bold uppercase tracking-[0.5em] leading-relaxed max-w-sm">
-              Expertly Verified Specialists. <br />
-              Protected Global Transactions.
-            </p>
-          </motion.div>
-        </motion.main>
-
-        <div className="absolute bottom-12 left-12 right-12 flex justify-between items-end z-20 hidden md:flex">
-          <div className="flex flex-col gap-2">
-            <p className="text-[9px] font-bold text-lumia-charcoal/20 uppercase tracking-[0.4em]">Protocol Active</p>
-            <p className="text-[9px] font-bold text-lumia-charcoal/20 uppercase tracking-[0.4em]">&copy; 2026 Lumia</p>
+          {/* Right Section */}
+          <div className="flex items-center gap-4">
+            {user ? (
+               <div className="flex items-center gap-6">
+                 <div className="hidden md:flex flex-col items-end">
+                    <span className="text-[10px] font-bold text-tranquil-teal uppercase tracking-widest">{profile?.role?.replace('_', ' ')}</span>
+                    <span className="text-xs font-serif italic text-tranquil-text">{profile?.displayName}</span>
+                 </div>
+                 <Link to="/profile" className="bg-tranquil-teal p-2.5 rounded-md text-white cursor-pointer hover:brightness-125 transition-all">
+                   <User className="w-4 h-4" />
+                 </Link>
+                 <button 
+                  onClick={() => logout()}
+                  className="hidden md:block text-[10px] font-bold uppercase tracking-widest text-rose-500 hover:text-rose-600 transition-colors"
+                 >
+                   Exit
+                 </button>
+               </div>
+            ) : (
+              <Link 
+                to="/login"
+                className="flex items-center gap-2 bg-tranquil-teal px-6 py-2.5 rounded-md text-white text-[11px] font-bold uppercase tracking-widest hover:brightness-110 transition-all shadow-lg"
+              >
+                Enter Sanctuary
+              </Link>
+            )}
+            <Menu className="lg:hidden w-6 h-6 text-tranquil-teal cursor-pointer" />
           </div>
-          <div className="flex gap-8">
-            <ShieldCheck className="w-4 h-4 text-lumia-charcoal/20" />
-            <HeartPulse className="w-4 h-4 text-lumia-charcoal/20" />
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative h-[600px] md:h-[800px] bg-black overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=2000" 
+          alt="Spa Treatment" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+        />
+        <div className="absolute inset-0 flex items-center">
+          <div className="max-w-[1800px] mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-2 items-center gap-12">
+            <div className="space-y-6 md:space-y-10">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-white/90 text-sm md:text-base font-medium tracking-wide"
+              >
+                Lumia Beauty & Health Spa
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-5xl md:text-8xl font-serif text-white leading-[1.1]"
+              >
+                Relax, Refresh, <br /> 
+                Rejuvenate With Us.
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="text-white/70 text-xs md:text-sm max-w-md font-light leading-relaxed"
+              >
+                Experience ultimate relaxation at our massage center, where skilled hands melt away stress. Rejuvenate your body and mind in a serene environment designed for your comfort, healing, and well-being.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <Link to="/explore" className="inline-block border-2 border-white text-white px-10 py-4 rounded-full text-[11px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+                  Explore more
+                </Link>
+              </motion.div>
+            </div>
+
+            {/* Right Side Floating Images */}
+            <div className="hidden md:flex justify-end relative h-[500px]">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="absolute top-0 right-10 w-[300px] aspect-[4/3] rounded-sm overflow-hidden border-4 border-white/20 shadow-2xl z-10"
+              >
+                <img src={spaDetail} className="w-full h-full object-cover" alt="Detail" />
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="absolute top-1/2 left-0 -translate-y-1/2 w-[350px] aspect-[4/5] rounded-sm overflow-hidden border-4 border-white/20 shadow-2xl z-20"
+              >
+                <img src={spaFacial} className="w-full h-full object-cover" alt="Facial" />
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6 }}
+                className="absolute bottom-0 right-0 w-[250px] aspect-square rounded-sm overflow-hidden border-4 border-white/20 shadow-2xl z-10"
+              >
+                <img src={spaCandle} className="w-full h-full object-cover" alt="Candle" />
+              </motion.div>
+              
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-30">
+                <div className="bg-white/10 hover:bg-white/20 p-2 border border-white/20 cursor-pointer"><ChevronDown className="w-4 h-4 text-white rotate-180" /></div>
+                <div className="bg-white/10 hover:bg-white/20 p-2 border border-white/20 cursor-pointer"><ChevronDown className="w-4 h-4 text-white" /></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. RITUALS SECTION - White (#FFFFFF) */}
-      <section className="py-24 md:py-40 px-8 bg-lumia-white">
-        <div className="max-w-7xl mx-auto">
-          <SectionHeader 
-            subtitle="The Realms" 
-            title="Refined Rituals." 
-            description="Lumia curates the world's most sophisticated wellness experiences, brought to your domain with cinematic precision."
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Services Section */}
+      <section className="py-24 md:py-40 px-6 md:px-12 max-w-[1800px] mx-auto">
+        <div className="text-center mb-20">
+          <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-tranquil-teal mb-6">Our Expertise</p>
+          <h2 className="text-3xl md:text-5xl font-serif text-tranquil-text">What We Do?</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              title: "Swedish Massage",
+              desc: "Experience ultimate relaxation with long, gliding strokes designed to ease tension and improve circulation.",
+              image: "https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+              title: "Deep Tissue Massage",
+              desc: "Target deeper layers of muscle and connective tissue to address chronic aches and stiff necks.",
+              image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+              title: "Aromatherapy Massage",
+              desc: "Enhance your mental and physical well-being through the power of pure essential oils.",
+              image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+              title: "Hot Stone Massage",
+              desc: "Melt away stress with heated volcanic stones placed strategically to release deep-seated tension.",
+              image: "https://images.unsplash.com/photo-1519415510236-85155f82b9c3?auto=format&fit=crop&q=80&w=800"
+            }
+          ].map((service, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="group relative aspect-[3/4] overflow-hidden cursor-pointer"
+            >
+              <img 
+                src={service.image} 
+                alt={service.title} 
+                className="absolute inset-0 w-full h-full object-cover grayscale-[0.2] transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-tranquil-teal/90 via-tranquil-teal/20 to-transparent transition-opacity duration-500"></div>
+              
+              <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-serif text-white">{service.title}</h3>
+                  <div className="h-0 group-hover:h-auto opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden transform translate-y-4 group-hover:translate-y-0">
+                    <p className="text-xs text-white/70 leading-relaxed font-light mb-6">
+                      {service.desc}
+                    </p>
+                    <Link to="/explore" className="inline-flex items-center gap-3 text-[9px] font-bold uppercase tracking-widest text-white border-b border-white/30 pb-1 hover:border-white transition-all">
+                      Book Now <ChevronRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Assessment Section */}
+      <section className="py-24 md:py-40 px-6 md:px-12 bg-sky-50 flex flex-col items-center">
+        <div className="max-w-2xl w-full">
+           <div className="text-center mb-16 space-y-4">
+             <span className="text-[10px] uppercase tracking-[0.3em] text-tranquil-teal font-bold">Bespoke Intelligence</span>
+             <h2 className="text-3xl md:text-5xl font-serif text-tranquil-text italic">Lumia Wellness Analyzer</h2>
+             <p className="text-sm text-tranquil-text/70 font-light leading-relaxed">
+               Let our advanced protocols analyze your current state to suggest the restorative path best suited to your needs today.
+             </p>
+           </div>
+           <div className="bg-tranquil-cream/30 p-8 md:p-12 rounded-[2rem] border border-black/5 shadow-inner">
+              <WellnessAssessment />
+           </div>
+        </div>
+      </section>
+      
+      {/* Global Registry Preview */}
+      <section className="py-24 md:py-40 px-6 md:px-12 bg-white overflow-hidden">
+        <div className="max-w-[1800px] mx-auto">
+          <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-24">
+            <div className="max-w-2xl">
+              <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-tranquil-teal mb-6">Global Registry</p>
+              <h2 className="text-4xl md:text-7xl font-serif text-tranquil-text leading-tight">
+                Our Top <br />
+                <span className="italic">Sanctuaries</span> & Experts
+              </h2>
+            </div>
+            <Link to="/explore" className="group flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-tranquil-teal">
+              View Full Registry <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </Link>
+          </header>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+            {/* Centers Column */}
+            <div className="space-y-12">
+              <div className="flex items-center gap-4 border-b border-black/5 pb-6">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-tranquil-teal/40">01</span>
+                <h3 className="text-xl font-serif text-tranquil-text italic">Premium Sanctuaries</h3>
+              </div>
+              <div className="grid grid-cols-1 gap-8">
+                {[
+                  { name: "Emerald Zen Spa", loc: "Riverside, Nairobi", img: "https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800", rating: "4.9" },
+                  { name: "Sapphire Sanctuary", loc: "Karen, Nairobi", img: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800", rating: "5.0" }
+                ].map((center, i) => (
+                  <motion.div 
+                    key={i}
+                    whileHover={{ y: -10 }}
+                    className="group cursor-pointer"
+                  >
+                    <div className="relative aspect-video rounded-[2.5rem] overflow-hidden mb-6 shadow-xl">
+                      <img src={center.img} alt={center.name} className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" />
+                      <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
+                        <Award className="w-4 h-4 text-tranquil-teal" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-tranquil-teal">Gold Class</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="text-2xl font-serif text-tranquil-text italic group-hover:text-tranquil-teal transition-colors">{center.name}</h4>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">{center.loc}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-tranquil-teal">
+                        <HeartPulse className="w-4 h-4" />
+                        <span className="text-sm font-serif">{center.rating}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Providers Column */}
+            <div className="space-y-12 lg:pt-24">
+              <div className="flex items-center gap-4 border-b border-black/5 pb-6">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-tranquil-teal/40">02</span>
+                <h3 className="text-xl font-serif text-tranquil-text italic">Master Artisans</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                {[
+                  { name: "Sarah Johnson", role: "Massage Master", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400", rating: "4.9" },
+                  { name: "Elena Rodriguez", role: "Aesthetic Artisan", img: "https://images.unsplash.com/photo-1594744803329-a584af1eb518?auto=format&fit=crop&q=80&w=400", rating: "5.0" },
+                  { name: "Michael Chen", role: "Physio Specialist", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400", rating: "4.8" },
+                  { name: "David Kojo", role: "Senior Practitioner", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", rating: "4.7" }
+                ].map((artisan, i) => (
+                  <motion.div 
+                    key={i}
+                    whileHover={{ scale: 1.05 }}
+                    className="flex flex-col items-center text-center group cursor-pointer"
+                  >
+                    <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden mb-6 border-4 border-tranquil-cream shadow-2xl">
+                      <img src={artisan.img} alt={artisan.name} className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700" />
+                    </div>
+                    <h4 className="text-xl font-serif text-tranquil-text italic group-hover:text-tranquil-teal transition-colors">{artisan.name}</h4>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1 mb-3">{artisan.role}</p>
+                    <div className="flex items-center gap-1.5 text-tranquil-teal/40 group-hover:text-tranquil-teal transition-colors">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span className="text-[9px] font-bold uppercase tracking-tight">Verified Specialist</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Premium Collection Section */}
+      <section className="py-24 md:py-40 bg-tranquil-cream">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+          <div className="text-center mb-20">
+            <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-tranquil-teal/70 mb-6">Exclusive Branded Experiences</p>
+            <h2 className="text-4xl md:text-6xl font-serif text-tranquil-text leading-tight">
+              Premium <span className="italic">Lumia</span> Signature Collection
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {[
-              { name: 'Skin Restoration', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=800', category: 'Dermatology' },
-              { name: 'Deep Tissue Ritual', image: 'https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800', category: 'Physiotherapy' },
-              { name: 'Aesthetic Artistry', image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=800', category: 'Beauty' }
+              { 
+                name: "Lumia Serenity Ritual™", 
+                desc: "A ethereal deep-relaxation protocol.",
+                image: "https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                name: "Lumia Emerald Escape™", 
+                desc: "Nature-infused restorative therapy.",
+                image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                name: "Lumia Deep Renewal™", 
+                desc: "Advanced cellular recovery session.",
+                image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                name: "Lumia Golden Harmony™", 
+                desc: "The ultimate balance and flow ritual.",
+                image: "https://images.unsplash.com/photo-1519415510236-85155f82b9c3?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                name: "Lumia Signature Wellness Journey™", 
+                desc: "A bespoke multi-modal experience.",
+                image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                name: "Lumia Stress Reset Experience™", 
+                desc: "Rapid nervous system regulation.",
+                image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                name: "Lumia Ultimate Recovery Ritual™", 
+                desc: "High-performance body restoration.",
+                image: "https://images.unsplash.com/photo-1594434057390-1c944eb98471?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                name: "Lumia Couples Sanctuary Experience™", 
+                desc: "Shared tranquility for two.",
+                image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800"
+              }
             ].map((item, i) => (
               <motion.div 
                 key={i}
-                whileHover={{ y: -10 }}
-                className="group relative h-[500px] rounded-[40px] overflow-hidden border border-black/5"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="relative aspect-[4/5] overflow-hidden group cursor-pointer"
               >
-                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-[2000ms]" />
-                <div className="absolute inset-0 bg-gradient-to-t from-lumia-charcoal/80 via-transparent to-transparent" />
-                <div className="absolute bottom-10 left-10 right-10">
-                  <p className="text-[10px] font-bold text-lumia-gold uppercase tracking-[0.4em] mb-3">{item.category}</p>
-                  <h3 className="text-3xl font-serif italic text-white mb-6">{item.name}</h3>
-                  <div className="flex items-center gap-4 text-[10px] font-bold text-white uppercase tracking-[0.4em] opacity-0 group-hover:opacity-100 transition-all">
-                    Explore Details <ArrowUpRight className="w-4 h-4" />
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                />
+                <div className="absolute inset-0 bg-tranquil-teal/80 group-hover:bg-tranquil-teal/40 transition-colors duration-500"></div>
+                
+                <div className="absolute inset-0 p-8 md:p-12 flex flex-col">
+                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-auto group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-5 h-5 text-white/60" />
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-serif text-white leading-tight">{item.name}</h3>
+                    <p className="text-xs text-white/60 leading-relaxed font-light line-clamp-2">{item.desc}</p>
+                    <div className="pt-4 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-y-4 group-hover:translate-y-0">
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-white">Book Ritual</span>
+                      <ChevronRight className="w-3 h-3 text-white" />
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -133,106 +425,63 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* 3. CERTIFICATION SECTION - Ivory/Cream (#F7F4EC) */}
-      <section className="py-24 md:py-40 px-8 bg-lumia-bg-certification">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div>
-              <SectionHeader 
-                subtitle="Verification Protocol" 
-                title="Trust, Certified." 
-              />
-              <div className="space-y-12">
-                {[
-                  { icon: Award, title: "Lumia Verified Professionals", desc: "Every specialist undergoes rigorous identity auditing and certification verification before entering the ecosystem." },
-                  { icon: Globe, title: "Sanctuary Inspection", desc: "Lumia Wellness Centers are physically inspected multi-annually to ensure uncompromised luxury and hygiene standards." },
-                  { icon: CheckCircle2, title: "Lumia Safe™ Escrow", desc: "Your transactions are held securely until the ritual is celebrated, ensuring absolute financial protection." }
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-8 group">
-                    <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-lumia-emerald shadow-sm border border-black/5 group-hover:bg-lumia-emerald group-hover:text-white transition-all">
-                      <item.icon className="w-8 h-8" />
-                    </div>
-                    <div>
-                      <h4 className="text-2xl font-serif italic mb-3 text-lumia-charcoal">{item.title}</h4>
-                      <p className="text-lumia-charcoal/40 font-medium leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="relative">
-              <div className="aspect-[4/5] rounded-[60px] overflow-hidden border border-black/5 shadow-2xl relative">
-                <img src="https://images.unsplash.com/photo-1540555700478-4be289a5080d?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover" alt="Certification" />
-                <div className="absolute inset-0 bg-lumia-emerald/10 mix-blend-multiply" />
-                <div className="absolute top-12 left-10 right-10 p-8 glass rounded-[40px] flex items-center gap-6">
-                  <div className="w-20 h-20 rounded-full bg-lumia-emerald flex items-center justify-center text-white shadow-xl">
-                    <ShieldCheck className="w-10 h-10" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-lumia-emerald uppercase tracking-[0.4em] mb-1">Status: Active</p>
-                    <p className="text-2xl font-serif italic text-lumia-charcoal leading-tight">Lumia Protocol V2.4</p>
-                  </div>
-                </div>
-              </div>
+      <TestimonialCarousel />
+      
+      {/* Footer */}
+      <footer className="bg-tranquil-teal text-white py-24 px-12 md:px-24">
+        <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
+          <div className="space-y-8">
+            <h2 className="text-2xl font-serif tracking-tight">Lumia Beauty & Health Spa</h2>
+            <p className="text-white/70 text-xs leading-relaxed max-w-xs">
+              Providing luxury sanctuary rituals designed for your absolute peace and rejuvenation.
+            </p>
+          </div>
+          <div>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.4em] mb-8">Navigation</h4>
+            <ul className="space-y-4 text-xs font-light text-white/80">
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/explore">Rituals</Link></li>
+              <li><Link to="/bookings">Schedule</Link></li>
+              <li><Link to="/profile">Concierge</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.4em] mb-8">Legal</h4>
+            <ul className="space-y-4 text-xs font-light text-white/60">
+              <li>Privacy Policy</li>
+              <li>Terms of Service</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.4em] mb-8">Newsletter</h4>
+            <div className="flex gap-2">
+              <input type="text" placeholder="Email" className="bg-white/5 border border-white/10 px-4 py-2 text-xs outline-none w-full" />
+              <button className="bg-white text-tranquil-teal px-4 py-2 text-[10px] font-bold uppercase">Join</button>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* 4. MEMBERSHIP SECTION - Very Light Gold (#FFF9E6) */}
-      <section className="py-24 md:py-40 px-8 bg-lumia-bg-membership text-center">
-        <div className="max-w-4xl mx-auto">
-          <SectionHeader 
-            subtitle="The Elite Circle" 
-            title="A Life Extraordinary." 
-            description="Join a global community of individuals who prioritize restoration as the cornerstone of their existence."
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-20">
-            <div className="p-10 bg-white rounded-[40px] border border-lumia-gold/20 shadow-xl flex flex-col items-center">
-              <Zap className="w-12 h-12 text-lumia-gold mb-8" />
-              <h4 className="text-3xl font-serif italic mb-4">Lumia Member</h4>
-              <p className="text-lumia-charcoal/40 font-medium mb-8">Access to our global network of verified specialists and sanctuaries.</p>
-              <div className="mt-auto w-full pt-8 border-t border-black/5">
-                <p className="text-[10px] font-bold text-lumia-gold uppercase tracking-[0.4em]">Complimentary Access</p>
-              </div>
-            </div>
-            <div className="p-10 bg-lumia-emerald rounded-[40px] shadow-2xl flex flex-col items-center text-white relative overflow-hidden">
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl" />
-              <Sparkles className="w-12 h-12 text-lumia-gold mb-8" />
-              <h4 className="text-3xl font-serif italic mb-4">Lumia Elite</h4>
-              <p className="text-white/60 font-medium mb-8">24/7 dedicated concierge, priority rituals, and exclusive private domains.</p>
-              <div className="mt-auto w-full pt-8 border-t border-white/10">
-                <p className="text-[10px] font-bold text-lumia-gold uppercase tracking-[0.4em]">Invitation Only</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-24">
-            <Link 
-              to="/explore" 
-              className="group inline-flex items-center gap-6 text-[11px] font-bold uppercase tracking-[0.6em] text-lumia-gold hover:text-lumia-emerald transition-all"
-            >
-              Begin Your Journey <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="py-20 px-12 bg-white border-t border-black/5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="text-2xl font-serif italic text-lumia-charcoal">Lumia.</div>
-          <div className="flex gap-12 text-[9px] font-bold uppercase tracking-[0.4em] text-lumia-charcoal/30">
-            <span>Privatcy Protocol</span>
-            <span>Terms of Service</span>
-            <span>Certification Board</span>
-          </div>
-          <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-lumia-charcoal/20">
-            &copy; 2026 Lumia Health & Beauty
-          </p>
         </div>
       </footer>
     </div>
   );
 };
+
+const IconLeaf = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg" 
+    className={className}
+    stroke="currentColor" 
+    strokeWidth="1.5" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.2C18.5 16.2 15.2 19 11 20z" />
+    <path d="M7 20c-3-2-3-5.5 0-9" />
+    <path d="M11 20v-4" />
+    <path d="M11 16l-2-2" />
+    <path d="M11 16l2-2" />
+  </svg>
+);
+
 

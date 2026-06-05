@@ -146,6 +146,23 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["roomId", "senderId", "text"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Feedback for a provider or center.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "targetId": { "type": "string", "description": "ID of provider or center" },
+        "targetType": { "type": "string", "enum": ["provider", "center"] },
+        "bookingId": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorId", "targetId", "rating"]
     }
   },
   "firestore": {
@@ -184,6 +201,10 @@
     "chatRooms/{roomId}/messages/{messageId}": {
       "schema": "ChatMessage",
       "description": "Messages within a room"
+    },
+    "reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Client reviews and ratings"
     }
   }
 }

@@ -4,10 +4,13 @@ import { Navbar, BottomNav, Sidebar, MobileNavbar } from './components/Navigatio
 import { Marketplace } from './pages/Marketplace';
 import { Wallet } from './pages/Wallet';
 import { Landing } from './pages/Landing';
+import { Profile } from './pages/Profile';
 import { LumiaAI } from './components/LumiaAI';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 import { SearchProvider } from './context/SearchContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { Login } from './pages/Login';
 
 // Basic Placeholder components for other pages
 const PlaceholderPage = ({ name }: { name: string }) => (
@@ -25,7 +28,7 @@ function AppContent() {
   const isLandingPage = location.pathname === '/';
 
   return (
-    <div className="min-h-screen bg-lumia-bg text-lumia-text flex flex-col md:flex-row antialiased">
+    <div className="min-h-screen bg-sky-50 text-aura-dark flex flex-col md:flex-row antialiased">
       {!isLandingPage && <Sidebar />}
       <div className={cn("flex-1 flex flex-col", !isLandingPage && "md:pl-20")}>
         {!isLandingPage && <Navbar />}
@@ -34,11 +37,12 @@ function AppContent() {
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/explore" element={<Marketplace />} />
               <Route path="/bookings" element={<PlaceholderPage name="Bookings Dashboard" />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/chat" element={<PlaceholderPage name="Lumia Messenger" />} />
-              <Route path="/profile" element={<PlaceholderPage name="User Profile" />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </AnimatePresence>
         </main>
@@ -47,19 +51,21 @@ function AppContent() {
       <LumiaAI />
       
       {/* Desk top side decorations */}
-      <div className="hidden lg:block fixed top-1/2 left-0 w-[500px] h-[500px] bg-lumia-emerald/10 blur-[120px] rounded-full -z-10 -ml-64"></div>
-      <div className="hidden lg:block fixed bottom-0 right-0 w-[400px] h-[400px] bg-lumia-gold/5 blur-[100px] rounded-full -z-10 -mr-48"></div>
+      <div className="hidden lg:block fixed top-1/2 left-0 w-[500px] h-[500px] bg-serene-sage/10 blur-[120px] rounded-full -z-10 -ml-64"></div>
+      <div className="hidden lg:block fixed bottom-0 right-0 w-[400px] h-[400px] bg-serene-accent/5 blur-[100px] rounded-full -z-10 -mr-48"></div>
     </div>
   );
 }
 
 function App() {
   return (
-    <SearchProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </SearchProvider>
+    <AuthProvider>
+      <SearchProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </SearchProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,22 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/react-datepicker/4.25.0/react-datepicker.min.css');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", "Poppins", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Poppins", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
   
-  --color-lumia-bg: #FAF9F6;
-  --color-lumia-card: #FFFFFF;
-  --color-lumia-emerald: #0F8A70;
-  --color-lumia-forest: #065F46;
-  --color-lumia-gold: #D4AF37;
-  --color-lumia-gold-hover: #C49A1D;
-  --color-lumia-text: #374151;
-  --color-lumia-charcoal: #374151;
-  --color-lumia-champagne: #F4E1A1;
-  --color-lumia-ivory: #FAF9F6;
-  --color-lumia-white: #FFFFFF;
+  --color-tranquil-teal: #1a3c34;
+  --color-tranquil-white: #ffffff;
+  --color-tranquil-cream: #fafafa;
+  --color-tranquil-text: #2d2d2d;
+  --color-tranquil-accent: #c4a484;
+  
+  --color-serene-sage: var(--color-tranquil-teal);
+  --color-serene-cream: var(--color-tranquil-cream);
+  --color-serene-dark: var(--color-tranquil-text);
+  --color-serene-accent: var(--color-tranquil-accent);
+  --color-serene-white: var(--color-tranquil-white);
+  
+  --color-aura-beige: var(--color-tranquil-cream);
+  --color-aura-brown: var(--color-tranquil-teal);
+  --color-aura-dark: var(--color-tranquil-text);
+  --color-aura-white: var(--color-tranquil-white);
+  
+  --color-lumia-bg: var(--color-tranquil-cream);
+  --color-lumia-card: var(--color-tranquil-white);
+  --color-lumia-emerald: var(--color-tranquil-teal);
+  --color-lumia-text: var(--color-tranquil-text);
+  --color-lumia-charcoal: var(--color-tranquil-text);
+  --color-lumia-gold: var(--color-tranquil-teal);
+  --color-lumia-gold-hover: #142e28;
+  --color-lumia-white: var(--color-tranquil-white);
   
   /* Rhythmic backgrounds */
   --color-lumia-bg-certification: #F7F4EC;
@@ -25,7 +41,7 @@
 
 @layer base {
   body {
-    @apply bg-lumia-bg text-lumia-text font-sans antialiased selection:bg-lumia-gold/20;
+    @apply bg-lumia-bg text-lumia-text font-sans antialiased selection:bg-aura-beige/40;
   }
 }
 
