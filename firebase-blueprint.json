@@ -1,0 +1,189 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Base user profile for clients, providers, center owners, and inspectors.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "provider", "owner", "inspector", "admin", "super_admin"] },
+        "phoneNumber": { "type": "string" },
+        "isVerified": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "location": { "type": "object", "description": "Last known coordinates" },
+        "subscriptionTier": { "type": "string", "enum": ["free", "plus", "elite"] }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Provider": {
+      "title": "Provider",
+      "description": "Specialized profile for wellness professionals.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "bio": { "type": "string" },
+        "specialties": { "type": "array", "items": { "type": "string" } },
+        "certifications": { "type": "array", "items": { "type": "string" } },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "isAvailable": { "type": "boolean" },
+        "approvalStatus": { "type": "string", "enum": ["pending", "approved", "rejected", "suspended"] },
+        "centerId": { "type": "string", "description": "If associated with a wellness center" }
+      },
+      "required": ["uid", "specialties"]
+    },
+    "WellnessCenter": {
+      "title": "Wellness Center",
+      "description": "Certified wellness facilities.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "location": { "type": "object" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "certificationLevel": { "type": "string", "enum": ["none", "standard", "silver", "gold"] },
+        "hygieneScore": { "type": "number" },
+        "amenities": { "type": "array", "items": { "type": "string" } },
+        "rating": { "type": "number" }
+      },
+      "required": ["id", "ownerId", "name"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "A service reservation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "providerId": { "type": "string" },
+        "centerId": { "type": "string" },
+        "serviceType": { "type": "string" },
+        "serviceName": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "in-progress", "completed", "cancelled", "disputed"] },
+        "deliveryType": { "type": "string", "enum": ["home", "center"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "default": "KES" },
+        "paymentStatus": { "type": "string", "enum": ["unpaid", "escrow", "released", "refunded"] },
+        "location": { "type": "object" },
+        "reviewId": { "type": "string" }
+      },
+      "required": ["id", "clientId", "providerId", "status", "deliveryType", "amount"]
+    },
+    "Wallet": {
+      "title": "Wallet",
+      "description": "Financial account for users.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "balance": { "type": "number" },
+        "escrowBalance": { "type": "number" },
+        "currency": { "type": "string", "default": "KES" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "balance"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial ledger entry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "walletId": { "type": "string" },
+        "bookingId": { "type": "string" },
+        "type": { "type": "string", "enum": ["credit", "debit", "escrow_lock", "escrow_release", "payout"] },
+        "amount": { "type": "number" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "walletId", "type", "amount"]
+    },
+    "Inspection": {
+      "title": "Inspection",
+      "description": "Facility or provider audit.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "targetId": { "type": "string", "description": "ID of center or provider" },
+        "targetType": { "type": "string", "enum": ["center", "provider"] },
+        "inspectorId": { "type": "string" },
+        "status": { "type": "string", "enum": ["scheduled", "in-progress", "completed"] },
+        "report": { "type": "string" },
+        "score": { "type": "number" },
+        "certificationGranted": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "targetId", "inspectorId", "status"]
+    },
+    "ChatRoom": {
+      "title": "Chat Room",
+      "description": "Conversation between two or more parties.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "bookingId": { "type": "string" },
+        "lastMessage": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "participants"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "Individual message in a room.",
+      "type": "object",
+      "properties": {
+        "roomId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["roomId", "senderId", "text"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "providers/{providerId}": {
+      "schema": "Provider",
+      "description": "Provider specific data"
+    },
+    "centers/{centerId}": {
+      "schema": "WellnessCenter",
+      "description": "Wellness center data"
+    },
+    "bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Service bookings"
+    },
+    "wallets/{userId}": {
+      "schema": "Wallet",
+      "description": "User wallets"
+    },
+    "transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Financial history"
+    },
+    "inspections/{inspectionId}": {
+      "schema": "Inspection",
+      "description": "Compliance inspections"
+    },
+    "chatRooms/{roomId}": {
+      "schema": "ChatRoom",
+      "description": "Messaging rooms"
+    },
+    "chatRooms/{roomId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Messages within a room"
+    }
+  }
+}

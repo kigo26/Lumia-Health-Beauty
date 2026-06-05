@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  
+  --color-lumia-bg: #FAF9F6;
+  --color-lumia-card: #FFFFFF;
+  --color-lumia-emerald: #0F8A70;
+  --color-lumia-forest: #065F46;
+  --color-lumia-gold: #D4AF37;
+  --color-lumia-gold-hover: #C49A1D;
+  --color-lumia-text: #374151;
+  --color-lumia-charcoal: #374151;
+  --color-lumia-champagne: #F4E1A1;
+  --color-lumia-ivory: #FAF9F6;
+  --color-lumia-white: #FFFFFF;
+  
+  /* Rhythmic backgrounds */
+  --color-lumia-bg-certification: #F7F4EC;
+  --color-lumia-bg-membership: #FFF9E6;
+}
+
+@layer base {
+  body {
+    @apply bg-lumia-bg text-lumia-text font-sans antialiased selection:bg-lumia-gold/20;
+  }
+}
+
+.premium-card {
+  @apply bg-white border border-black/5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-lumia-gold/20;
+}
+
+.luxury-gradient {
+  background: linear-gradient(135deg, #FAF9F6 0%, #F4E1A1 100%);
+}
+
+.glass {
+  @apply bg-white/40 backdrop-blur-md border border-white/20;
+}
+

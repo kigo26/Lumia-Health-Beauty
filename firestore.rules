@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasRole(role) {
+      return isSignedIn() && getUserData().role == role;
+    }
+
+    function isSuperAdmin() {
+      return hasRole('super_admin');
+    }
+
+    function isAdmin() {
+      return hasRole('super_admin') || hasRole('admin');
+    }
+
+    // --- User Rules ---
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) 
+        && incoming().keys().hasAll(['uid', 'email', 'role', 'isVerified', 'createdAt', 'updatedAt', 'subscriptionTier'])
+        && incoming().role in ['client', 'provider', 'owner', 'inspector', 'admin', 'super_admin']
+        && incoming().uid == request.auth.uid;
+      allow update: if (isOwner(userId) || isSuperAdmin())
+        && incoming().updatedAt == request.time
+        && (isOwner(userId) ? incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'phoneNumber', 'location', 'updatedAt', 'subscriptionTier']) : true);
+      allow delete: if isSuperAdmin();
+    }
+
+    // --- Provider Rules ---
+    match /providers/{providerId} {
+      allow read: if isSignedIn();
+      allow create, update: if (isOwner(providerId) || isAdmin())
+        && incoming().uid == providerId;
+      allow delete: if isSuperAdmin();
+    }
+
+    // --- Center Rules ---
+    match /centers/{centerId} {
+      allow read: if isSignedIn();
+      allow create: if (isSignedIn() && incoming().ownerId == request.auth.uid) || isAdmin();
+      allow update: if (isSignedIn() && existing().ownerId == request.auth.uid) || isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // --- Booking Rules ---
+    match /bookings/{bookingId} {
+      allow read: if isSignedIn() && (resource.data.clientId == request.auth.uid || resource.data.providerId == request.auth.uid);
+      allow create: if isSignedIn() && incoming().clientId == request.auth.uid;
+      allow update: if isSignedIn() && (existing().clientId == request.auth.uid || existing().providerId == request.auth.uid);
+    }
+
+    // --- Wallet Rules (STRICT) ---
+    match /wallets/{userId} {
+      allow read: if isOwner(userId);
+      // Only system/server should really write to wallets in a production app, 
+      // but for this prototype we'll allow restricted owner updates for balance simulation
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['balance', 'escrowBalance', 'updatedAt']);
+    }
+
+    // --- Transaction Rules ---
+    match /transactions/{transactionId} {
+      allow read: if isSignedIn() && exists(/databases/$(database)/documents/wallets/$(request.auth.uid));
+      allow create: if isSignedIn();
+    }
+
+    // --- Chat Rules ---
+    match /chatRooms/{roomId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow create: if isSignedIn() && request.auth.uid in incoming().participants;
+      
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && request.auth.uid in get(/databases/$(database)/documents/chatRooms/$(roomId)).data.participants;
+        allow create: if isSignedIn() && incoming().senderId == request.auth.uid;
+      }
+    }
+
+    // --- Inspection Rules ---
+    match /inspections/{inspectionId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn(); // In production, restrict to isInspector()
+    }
+  }
+}

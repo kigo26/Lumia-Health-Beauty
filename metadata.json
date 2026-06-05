@@ -1,0 +1,6 @@
+{
+  "name": "Lumia Health & Beauty",
+  "description": "A premium wellness marketplace connecting clients with verified providers and certified luxury wellness centers.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
