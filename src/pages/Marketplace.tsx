@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SERVICES, MOCK_PROVIDERS, MOCK_CENTERS, LUMIA_RITUALS } from '../data';
 import { ServiceCard, ProviderCard, CenterCard, ProviderSkeleton, CenterSkeleton, RitualCard } from '../components/Cards';
+import { LazyLoadWrapper } from '../components/LazyLoadWrapper';
 import { RitualCompareModal } from '../components/RitualCompareModal';
 import { Ritual } from '../types';
 import { BookingFlow } from '../components/BookingFlow';
@@ -32,6 +33,17 @@ export const Marketplace = () => {
 
   const [filteredProviders, setFilteredProviders] = useState<any[]>(MOCK_PROVIDERS);
   const [filteredCenters, setFilteredCenters] = useState<any[]>(MOCK_CENTERS);
+  
+  const ritualImages: {[key: string]: string} = {
+    'r1': "https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800",
+    'r2': "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=800",
+    'r3': "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800",
+    'r4': "https://images.unsplash.com/photo-1519415510236-85155f82b9c3?auto=format&fit=crop&q=80&w=800",
+    'r5': "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800",
+    'r6': "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=800",
+    'r7': "https://images.unsplash.com/photo-1594434057390-1c944eb98471?auto=format&fit=crop&q=80&w=800",
+    'r8': "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800"
+  };
 
   const handleProviderClick = (provider: any) => {
     setSelectedProvider(provider);
@@ -116,7 +128,8 @@ export const Marketplace = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="pb-32 pt-24 md:pt-32 px-4 md:px-8 max-w-[1600px] mx-auto"
+      className="min-h-screen font-sans antialiased pb-32 pt-24 md:pt-32 px-4 md:px-8 max-w-[1600px] mx-auto"                
+      style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=2000')`, backgroundAttachment: 'fixed', backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       {/* Header Info */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12 md:mb-24">
@@ -344,6 +357,7 @@ export const Marketplace = () => {
                         <RitualCard 
                           key={ritual.id} 
                           ritual={ritual} 
+                          image={ritualImages[ritual.id]}
                           isSelected={!!selectedRituals.find(r => r.id === ritual.id)} 
                           onSelect={() => setSelectedRituals(prev => prev.find(r => r.id === ritual.id) ? prev.filter(r => r.id !== ritual.id) : [...prev, ritual])} 
                         />
@@ -370,18 +384,19 @@ export const Marketplace = () => {
                       Array.from({ length: 4 }).map((_, i) => <ProviderSkeleton key={i} />)
                     ) : filteredProviders.length > 0 ? (
                       filteredProviders.map((provider) => (
-                        <ProviderCard 
-                          key={provider.uid}
-                          name={provider.displayName}
-                          image={provider.photoURL}
-                          rating={provider.rating}
-                          reviewCount={provider.reviewCount}
-                          subtitle={provider.specialties.join(' • ')}
-                          badge={provider.certificationLevel}
-                          status={provider.status}
-                          distance={provider.distance}
-                          onClick={() => handleProviderClick(provider)}
-                        />
+                        <LazyLoadWrapper key={provider.uid}>
+                          <ProviderCard 
+                            name={provider.displayName}
+                            image={provider.photoURL}
+                            rating={provider.rating}
+                            reviewCount={provider.reviewCount}
+                            subtitle={provider.specialties.join(' • ')}
+                            badge={provider.certificationLevel}
+                            status={provider.status}
+                            distance={provider.distance}
+                            onClick={() => handleProviderClick(provider)}
+                          />
+                        </LazyLoadWrapper>
                       ))
                     ) : (
                       <div className="col-span-full py-24 flex flex-col items-center text-center bg-white rounded-[3rem] border border-dashed border-black/10">
@@ -414,17 +429,18 @@ export const Marketplace = () => {
                       Array.from({ length: 2 }).map((_, i) => <CenterSkeleton key={i} />)
                     ) : filteredCenters.length > 0 ? (
                       filteredCenters.map((center) => (
-                        <CenterCard 
-                          key={center.id}
-                          name={center.name}
-                          image={center.images[0]}
-                          rating={center.rating}
-                          reviewCount={center.reviewCount}
-                          address={center.address}
-                          certificationLevel={center.certificationLevel as any}
-                          distance={center.distance}
-                          onClick={() => setIsBookingOpen(true)}
-                        />
+                        <LazyLoadWrapper key={center.id}>
+                          <CenterCard 
+                            name={center.name}
+                            image={center.images[0]}
+                            rating={center.rating}
+                            reviewCount={center.reviewCount}
+                            address={center.address}
+                            certificationLevel={center.certificationLevel as any}
+                            distance={center.distance}
+                            onClick={() => setIsBookingOpen(true)}
+                          />
+                        </LazyLoadWrapper>
                       ))
                     ) : (
                       <div className="col-span-full p-24 bg-white rounded-[3rem] border border-dashed border-black/10">

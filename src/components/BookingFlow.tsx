@@ -9,6 +9,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
 import { CalendarSlotPicker } from './CalendarSlotPicker';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
   const { user } = useAuth();
@@ -48,7 +49,7 @@ export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
       nextStep();
     } catch (e) {
       console.error(e);
-      alert('Booking failed.');
+      toast.error('Booking failed.');
     } finally {
       setIsSubmitting(false);
     }
@@ -67,10 +68,10 @@ export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
         createdAt: serverTimestamp()
       });
       nextStep();
-      alert(`Gift purchased! Your code is ${code}`);
+      toast.success(`Gift purchased! Code: ${code}`);
     } catch (e) {
       console.error(e);
-      alert('Gift purchase failed.');
+      toast.error('Gift purchase failed.');
     } finally {
       setIsSubmitting(false);
     }

@@ -17,6 +17,8 @@ import spaDetail from '../assets/images/spa_detail_1780691428480.png';
 import spaFacial from '../assets/images/spa_facial_1780691447919.png';
 import spaCandle from '../assets/images/spa_candle_1780691461660.png';
 import spaBackground from '../assets/images/spa_background_1780691676574.png';
+import lumiaLogo from '../assets/images/lumia_logo_mockup_1780881339195.png';
+
 
 const MoodCard = ({ children, className, delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
   <motion.div
@@ -45,7 +47,7 @@ export const Landing = () => {
         <div className="max-w-[1800px] mx-auto flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="text-xl md:text-2xl font-serif text-tranquil-teal tracking-tight font-medium">
-            Lumia Beauty & Health Spa
+            <img src={lumiaLogo} alt="Lumia Beauty & Health Spa" className="h-10 md:h-12 w-auto" />
           </Link>
 
           {/* Menu */}
@@ -105,7 +107,6 @@ export const Landing = () => {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-white/90 text-sm md:text-base font-medium tracking-wide"
               >
-                Lumia Beauty & Health Spa
               </motion.div>
               <motion.h1 
                 initial={{ opacity: 0, y: 30 }}
@@ -129,8 +130,8 @@ export const Landing = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
               >
-                <Link to="/explore" className="inline-block border-2 border-white text-white px-10 py-4 rounded-full text-[11px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-                  Explore more
+                <Link to="/explore" className="inline-block border border-white text-white px-8 py-3 rounded-full text-[12px] font-medium uppercase tracking-widest hover:bg-white hover:text-black hover:border-transparent transition-all duration-300">
+                  Explore Lumia
                 </Link>
               </motion.div>
             </div>
@@ -459,6 +460,9 @@ export const Landing = () => {
               <button className="bg-white text-tranquil-teal px-4 py-2 text-[10px] font-bold uppercase">Join</button>
             </div>
           </div>
+        </div>
+        <div className="mt-16 pt-8 border-t border-white/10 text-center text-[10px] uppercase tracking-widest text-white/50">
+          Design By <a href="mailto:jamenya1988@gmail.com" className="hover:text-white underline">Kepler Camp Codes</a>
         </div>
       </footer>
     </div>

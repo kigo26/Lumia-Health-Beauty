@@ -28,12 +28,12 @@ const RatingSummary = ({ rating, reviewCount, compact = false }: { rating: numbe
           <Star 
             key={i} 
             className={cn(
-              "w-2.5 h-2.5", 
+              "w-3 h-3", 
               i < fullStars ? "fill-serene-sage text-serene-sage" : "text-black/10"
             )} 
           />
         ))}
-        {!compact && <span className="ml-2 text-xs font-bold text-serene-dark">{rating.toFixed(1)}</span>}
+        <span className={cn("ml-2 text-[10px] font-bold text-serene-dark", compact && "hidden md:inline")}>{rating.toFixed(1)}</span>
       </div>
       {reviewCount !== undefined && (
         <span className="text-[9px] text-serene-dark/40 font-bold uppercase tracking-tighter">
@@ -113,7 +113,11 @@ export const ProviderCard = ({ name, image, rating, reviewCount, subtitle, badge
           {badge}
         </span>
         {status && (
-          <span className={cn("text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-widest border", statusConfig.color)}>
+          <span className={cn("text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-widest border flex items-center gap-1.5", statusConfig.color)}>
+            <div className={cn("w-1.5 h-1.5 rounded-full",
+                status === 'available' ? "bg-green-500" :
+                status === 'busy' ? "bg-orange-500" : "bg-gray-500"
+            )} />
             {statusConfig.label}
           </span>
         )}
@@ -190,24 +194,31 @@ export const CenterCard = ({ name, image, rating, reviewCount, address, certific
   </motion.div>
 );
 
-export const RitualCard = ({ ritual, isSelected, onSelect }: { ritual: Ritual, isSelected: boolean, onSelect: () => void }) => (
+export const RitualCard = ({ ritual, image, isSelected, onSelect }: { ritual: Ritual, image?: string, isSelected: boolean, onSelect: () => void }) => (
   <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.6, ease: [0.21, 0, 0.07, 1] }}
     whileHover={{ scale: 1.02 }}
     onClick={onSelect}
     className={cn(
-      "p-8 rounded-[2rem] border-2 cursor-pointer transition-all duration-300",
-      isSelected ? "border-serene-accent bg-serene-sage/5" : "border-black/5 bg-white shadow-sm"
+      "overflow-hidden rounded-[2.5rem] border border-black/5 cursor-pointer transition-all duration-500",
+      isSelected ? "border-serene-accent shadow-lg bg-serene-sage/5" : "bg-white hover:shadow-2xl hover:-translate-y-1 hover:border-black/10"
     )}
   >
-    <h3 className="font-serif text-xl text-serene-dark mb-4">{ritual.name}</h3>
-    <div className="flex gap-4 mb-6">
-      <span className="text-[10px] font-bold uppercase text-serene-dark/40 tracking-widest">{ritual.duration}</span>
-      <span className="text-[10px] font-bold uppercase text-serene-accent tracking-widest">${ritual.price}</span>
-    </div>
-    <div className="flex flex-wrap gap-2">
-      {ritual.benefits.slice(0, 2).map((benefit, i) => (
-        <span key={i} className="text-[10px] bg-black/5 text-serene-dark/70 px-3 py-1 rounded-full">{benefit}</span>
-      ))}
+    {image && <img src={image} alt={ritual.name} className="w-full h-48 object-cover" />}
+    <div className="p-8">
+      <h3 className="font-serif text-2xl text-serene-dark mb-4">{ritual.name}</h3>
+      <div className="flex gap-4 mb-6">
+        <span className="text-[10px] font-bold uppercase text-serene-dark/40 tracking-widest">{ritual.duration}</span>
+        <span className="text-[10px] font-bold uppercase text-serene-accent tracking-widest">${ritual.price}</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {ritual.benefits.slice(0, 2).map((benefit, i) => (
+          <span key={i} className="text-[10px] bg-black/5 text-serene-dark/70 px-4 py-1.5 rounded-full uppercase tracking-wider">{benefit}</span>
+        ))}
+      </div>
     </div>
   </motion.div>
 );

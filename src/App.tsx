@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar, BottomNav, Sidebar, MobileNavbar } from './components/Navigation';
+import { Bookings } from './pages/Bookings';
 import { Marketplace } from './pages/Marketplace';
 import { Wallet } from './pages/Wallet';
 import { Landing } from './pages/Landing';
@@ -11,6 +12,8 @@ import { cn } from './lib/utils';
 import { SearchProvider } from './context/SearchContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { Login } from './pages/Login';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { Toaster } from 'react-hot-toast';
 
 // Basic Placeholder components for other pages
 const PlaceholderPage = ({ name }: { name: string }) => (
@@ -21,6 +24,17 @@ const PlaceholderPage = ({ name }: { name: string }) => (
     <h1 className="text-3xl font-serif italic text-lumia-gold mb-2">{name} is Coming Soon</h1>
     <p className="text-lumia-white/40 font-medium">We're crafting a premium experience for you. Stay tuned.</p>
   </div>
+);
+
+const AnimatedPage = ({ children }: { children: React.ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0, x: 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -20 }}
+    transition={{ duration: 0.3 }}
+  >
+    {children}
+  </motion.div>
 );
 
 function AppContent() {
@@ -35,14 +49,14 @@ function AppContent() {
         {!isLandingPage && <MobileNavbar />}
         <main className="flex-1 relative">
           <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/explore" element={<Marketplace />} />
-              <Route path="/bookings" element={<PlaceholderPage name="Bookings Dashboard" />} />
-              <Route path="/wallet" element={<Wallet />} />
-              <Route path="/chat" element={<PlaceholderPage name="Lumia Messenger" />} />
-              <Route path="/profile" element={<Profile />} />
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<AnimatedPage><Landing /></AnimatedPage>} />
+              <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
+              <Route path="/explore" element={<AnimatedPage><Marketplace /></AnimatedPage>} />
+              <Route path="/bookings" element={<AnimatedPage><Bookings /></AnimatedPage>} />
+              <Route path="/wallet" element={<AnimatedPage><Wallet /></AnimatedPage>} />
+              <Route path="/chat" element={<AnimatedPage><PlaceholderPage name="Lumia Messenger" /></AnimatedPage>} />
+              <Route path="/profile" element={<AnimatedPage><Profile /></AnimatedPage>} />
             </Routes>
           </AnimatePresence>
         </main>
@@ -59,13 +73,16 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <SearchProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </SearchProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <SearchProvider>
+          <Router>
+            <AppContent />
+          </Router>
+          <Toaster />
+        </SearchProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

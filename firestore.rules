@@ -120,5 +120,11 @@ service cloud.firestore {
         && incoming().rating >= 1 && incoming().rating <= 5;
       allow update, delete: if isSignedIn() && existing().authorId == request.auth.uid;
     }
+
+    // --- Error Logs ---
+    match /logs/{logId} {
+      allow create: if isSignedIn();
+      allow read: if isAdmin();
+    }
   }
 }

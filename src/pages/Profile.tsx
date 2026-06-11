@@ -3,10 +3,12 @@ import { motion } from 'motion/react';
 import { User, Settings, ShieldCheck, MapPin, Calendar, Heart, Sparkles, LogOut, ShieldAlert } from 'lucide-react';
 import { RitualProgress } from '../components/RitualProgress';
 import { MetricChart } from '../components/MetricChart';
+import { WellnessGoalsProgress } from '../components/WellnessGoalsProgress';
 import { useAuth } from '../contexts/AuthContext';
 import { db, logout } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { cn } from '../lib/utils';
+import { toast } from 'react-hot-toast';
 
 export const Profile = () => {
   const { user, profile, loading } = useAuth();
@@ -25,8 +27,10 @@ export const Profile = () => {
         role: newRole,
         updatedAt: new Date().toISOString()
       });
+      toast.success(`Role switched to ${newRole}`);
     } catch (e) {
       console.error(e);
+      toast.error('Failed to update role');
     }
   };
 
@@ -92,6 +96,8 @@ export const Profile = () => {
           <RitualProgress />
           
           <MetricChart />
+          
+          <WellnessGoalsProgress />
           
           <section>
             <h3 className="text-[10px] font-bold uppercase tracking-[0.4em] text-tranquil-teal/40 mb-10">Restoration Journal</h3>

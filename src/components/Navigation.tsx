@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Bell, User, MessageSquare, Home, Calendar, Wallet as WalletIcon, ShieldCheck, Sparkles, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Link, useLocation } from 'react-router-dom';
@@ -8,11 +8,14 @@ import { useSearch } from '../context/SearchContext';
 import { useAuth } from '../contexts/AuthContext';
 import { LogOut, LogIn } from 'lucide-react';
 import { logout } from '../lib/firebase';
+import { LogoutModal } from './LogoutModal';
+import { LUMIA_RITUALS, SERVICES, MOCK_PROVIDERS, MOCK_CENTERS } from '../data';
 
 export const Navbar = () => {
-  const { searchQuery, setSearchQuery } = useSearch();
+  const { searchQuery, setSearchQuery, recentSearches, popularServices, addRecentSearch } = useSearch();
   const { user, profile } = useAuth();
   const [showGreeting, setShowGreeting] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     if (user && !sessionStorage.getItem('hasGreeted')) {
@@ -23,18 +26,71 @@ export const Navbar = () => {
     }
   }, [user]);
 
+  const filteredSuggestions = useMemo(() => {
+    if (!searchQuery) return [];
+    
+    const query = searchQuery.toLowerCase();
+    
+    const rituals = LUMIA_RITUALS.filter(r => r.name.toLowerCase().includes(query)).map(r => ({ type: 'Ritual', name: r.name }));
+    const services = SERVICES.filter(s => s.name.toLowerCase().includes(query)).map(s => ({ type: 'Service', name: s.name }));
+    const providers = MOCK_PROVIDERS.filter(p => p.displayName.toLowerCase().includes(query)).map(p => ({ type: 'Provider', name: p.displayName }));
+    const centers = MOCK_CENTERS.filter(c => c.name.toLowerCase().includes(query)).map(c => ({ type: 'Center', name: c.name }));
+    
+    return [...rituals, ...services, ...providers, ...centers].slice(0, 6);
+  }, [searchQuery]);
+
   return (
     <nav className="fixed top-0 left-20 right-0 z-50 h-20 bg-serene-white/80 backdrop-blur-md hidden md:flex items-center justify-between px-10 border-b border-black/5">
       <div className="flex items-center gap-6 w-1/2">
-        <div className="flex items-center gap-4 bg-serene-sage/5 border border-black/5 rounded-full px-6 py-2.5 w-full max-w-md shadow-sm transition-all focus-within:bg-white focus-within:ring-2 focus-within:ring-serene-dark/5">
-          <Search className="w-4 h-4 text-serene-dark/30" />
+        <div className="flex items-center gap-4 bg-serene-white border border-black/5 rounded-2xl px-6 py-3 w-full max-w-lg shadow-sm transition-all focus-within:ring-2 focus-within:ring-serene-dark/10 relative">
+          <Search className="w-4 h-4 text-serene-dark/40" />
           <input 
             type="text" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             placeholder="Search rituals, sanctuaries or protocols..." 
-            className="bg-transparent border-none outline-none text-sm w-full text-serene-dark placeholder:text-serene-dark/20 font-medium"
+            className="bg-transparent border-none outline-none text-sm w-full text-serene-dark placeholder:text-serene-dark/30 font-medium"
           />
+          {showSuggestions && (
+            <div className="absolute top-14 left-0 w-full bg-white border border-serene-sage/20 rounded-2xl shadow-xl p-4 z-50">
+              {searchQuery ? (
+                <>
+                  <h4 className="text-[10px] uppercase font-bold tracking-widest text-serene-dark/30 mb-2">Suggestions</h4>
+                  {filteredSuggestions.length > 0 ? (
+                    <div className="flex flex-col gap-1">
+                      {filteredSuggestions.map((suggestion, i) => (
+                        <button key={i} onClick={() => { setSearchQuery(suggestion.name); addRecentSearch(suggestion.name); }} className="text-xs text-left px-3 py-2 hover:bg-black/5 rounded-lg flex justify-between">
+                          <span>{suggestion.name}</span>
+                          <span className="text-[9px] text-serene-accent font-bold uppercase">{suggestion.type}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : <p className="text-xs text-serene-dark/30 italic">No suggestions found.</p>}
+                </>
+              ) : (
+                <>
+                  <h4 className="text-[10px] uppercase font-bold tracking-widest text-serene-dark/30 mb-2">Popular</h4>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {popularServices.map(service => (
+                      <button key={service} onClick={() => { setSearchQuery(service); addRecentSearch(service); }} className="text-xs bg-serene-sage/10 px-3 py-1 rounded-full hover:bg-serene-sage/20">{service}</button>
+                    ))}
+                  </div>
+                  {recentSearches.length > 0 && (
+                    <>
+                      <h4 className="text-[10px] uppercase font-bold tracking-widest text-serene-dark/30 mb-2">Recent</h4>
+                      <div className="flex flex-col gap-1">
+                        {recentSearches.map(search => (
+                          <button key={search} onClick={() => setSearchQuery(search)} className="text-xs text-left px-3 py-1 hover:bg-black/5 rounded-lg">{search}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -108,6 +164,7 @@ export const MobileNavbar = () => {
 export const Sidebar = () => {
   const location = useLocation();
   const { user, profile, isAdmin } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
@@ -156,7 +213,7 @@ export const Sidebar = () => {
       <div className="mt-auto flex flex-col items-center gap-6">
         {user && (
           <button 
-            onClick={() => logout()}
+            onClick={() => setIsLogoutModalOpen(true)}
             className="w-10 h-10 rounded-full bg-rose-500/5 border border-rose-500/10 flex items-center justify-center cursor-pointer hover:bg-rose-500 hover:text-white transition-all text-rose-500 shadow-sm"
             title="Log Out"
           >
@@ -166,6 +223,7 @@ export const Sidebar = () => {
         <div className="w-10 h-10 rounded-full bg-serene-dark/5 border border-black/5 flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95 transition-all text-serene-dark/30 hover:text-serene-dark shadow-sm">
           <ShieldCheck className="w-5 h-5" />
         </div>
+        <LogoutModal isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)} onConfirm={() => logout()} />
       </div>
     </aside>
   );

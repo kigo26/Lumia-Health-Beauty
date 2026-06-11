@@ -163,6 +163,20 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "authorId", "targetId", "rating"]
+    },
+    "ErrorLog": {
+      "title": "Error Log",
+      "description": "Client-side runtime error logs for debugging.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "message": { "type": "string" },
+        "stack": { "type": "string" },
+        "componentStack": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "message", "createdAt"]
     }
   },
   "firestore": {
@@ -205,6 +219,10 @@
     "reviews/{reviewId}": {
       "schema": "Review",
       "description": "Client reviews and ratings"
+    },
+    "logs/{logId}": {
+      "schema": "ErrorLog",
+      "description": "App error logs"
     }
   }
 }
