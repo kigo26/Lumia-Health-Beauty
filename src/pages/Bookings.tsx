@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { Printer, Calendar, MapPin, Clock, Check } from 'lucide-react';
+import { Printer, Calendar, MapPin, Clock, Edit3 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'react-hot-toast';
+import { RescheduleModal } from '../components/RescheduleModal';
 
 const MOCK_BOOKINGS = [
   { id: '1', service: 'Deep Tissue Recovery', date: 'June 15, 2026', time: '10:00 AM', center: 'Emerald Zen Spa', status: 'Confirmed' },
@@ -11,6 +12,7 @@ const MOCK_BOOKINGS = [
 
 export const Bookings = () => {
   const componentRef = useRef<HTMLDivElement>(null);
+  const [rescheduleBooking, setRescheduleBooking] = useState<any>(null);
 
   const handlePrint = (booking: any) => {
     const printWindow = window.open('', '_blank');
@@ -65,6 +67,14 @@ export const Bookings = () => {
                 booking.status === 'Confirmed' ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600")}>
                 {booking.status}
               </span>
+              {booking.status === 'Confirmed' && (
+                <button 
+                  onClick={() => setRescheduleBooking(booking)}
+                  className="flex items-center gap-2 px-6 py-3 bg-serene-sage/10 text-serene-dark rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-serene-sage/20 transition-all"
+                >
+                  <Edit3 className="w-4 h-4" /> Quick Reschedule
+                </button>
+              )}
               <button 
                 onClick={() => handlePrint(booking)}
                 className="flex items-center gap-2 px-6 py-3 bg-serene-dark text-white rounded-xl text-[10px] uppercase font-bold tracking-widest hover:scale-[1.02] transition-transform"
@@ -75,6 +85,10 @@ export const Bookings = () => {
           </div>
         ))}
       </div>
+      
+      {rescheduleBooking && (
+        <RescheduleModal booking={rescheduleBooking} onClose={() => setRescheduleBooking(null)} />
+      )}
     </motion.div>
   );
 };

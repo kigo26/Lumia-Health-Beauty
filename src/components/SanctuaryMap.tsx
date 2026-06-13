@@ -29,9 +29,9 @@ const createCustomIcon = (type: 'provider' | 'center') => {
 const centerIcon = createCustomIcon('center');
 const providerIcon = createCustomIcon('provider');
 
-export const SanctuaryMap = () => {
+export const SanctuaryMap = ({ userLocation }: { userLocation?: { lat: number; lng: number } | null }) => {
   // Center of Nairobi as default view
-  const defaultCenter: [number, number] = [-1.2921, 36.8219];
+  const defaultCenter: [number, number] = userLocation ? [userLocation.lat, userLocation.lng] : [-1.2921, 36.8219];
 
   return (
     <motion.div 
@@ -50,6 +50,15 @@ export const SanctuaryMap = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           // Using a slightly more muted tile layer if available, or just standard OSM
         />
+
+        {/* Render User Location */}
+        {userLocation && (
+          <Marker 
+            position={[userLocation.lat, userLocation.lng]}
+          >
+            <Popup>You are here</Popup>
+          </Marker>
+        )}
 
         {/* Render Wellness Centers */}
         {MOCK_CENTERS.map((center) => (

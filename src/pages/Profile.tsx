@@ -4,6 +4,7 @@ import { User, Settings, ShieldCheck, MapPin, Calendar, Heart, Sparkles, LogOut,
 import { RitualProgress } from '../components/RitualProgress';
 import { MetricChart } from '../components/MetricChart';
 import { WellnessGoalsProgress } from '../components/WellnessGoalsProgress';
+import { RewardsSummary } from '../components/RewardsSummary';
 import { useAuth } from '../contexts/AuthContext';
 import { db, logout } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -175,6 +176,8 @@ export const Profile = () => {
               </button>
             </div>
           </section>
+
+          <RewardsSummary points={1250} tier="Gold" />
 
           <section className="p-10 border border-black/5 rounded-[2.5rem]">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.4em] text-tranquil-teal/70 mb-8">Bio-Stats</h4>

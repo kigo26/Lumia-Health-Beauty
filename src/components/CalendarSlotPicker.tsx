@@ -9,6 +9,7 @@ interface CalendarSlotPickerProps {
   onDateChange: (date: Date | null) => void;
   onTimeChange: (time: string) => void;
   availableTimes: string[];
+  suggestedTimes?: string[];
 }
 
 export const CalendarSlotPicker: React.FC<CalendarSlotPickerProps> = ({
@@ -17,6 +18,7 @@ export const CalendarSlotPicker: React.FC<CalendarSlotPickerProps> = ({
   onDateChange,
   onTimeChange,
   availableTimes,
+  suggestedTimes = [],
 }) => {
   return (
     <div className="space-y-8">
@@ -58,13 +60,19 @@ export const CalendarSlotPicker: React.FC<CalendarSlotPickerProps> = ({
                 key={time}
                 onClick={() => onTimeChange(time)}
                 className={cn(
-                  "py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border",
+                  "py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border relative",
                   selectedTime === time
                     ? "bg-aura-dark text-white border-aura-dark shadow-lg"
-                    : "bg-white text-aura-dark border-black/5 hover:border-aura-dark"
+                    : "bg-white text-aura-dark border-black/5 hover:border-aura-dark",
+                  suggestedTimes.includes(time) && selectedTime !== time && "border-aura-brown/50"
                 )}
               >
                 {time}
+                {suggestedTimes.includes(time) && (
+                  <span className="absolute -top-2 -right-2 bg-aura-brown text-white text-[8px] px-2 py-0.5 rounded-full">
+                    Smart
+                  </span>
+                )}
               </button>
             ))}
           </div>

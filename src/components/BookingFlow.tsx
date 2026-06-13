@@ -5,7 +5,7 @@ import { cn, formatCurrency } from '../lib/utils';
 import { SERVICES, MOCK_PROVIDERS, MOCK_CENTERS } from '../data';
 import Lottie from 'lottie-react';
 import { db } from '../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
 import { CalendarSlotPicker } from './CalendarSlotPicker';
 import { Link } from 'react-router-dom';
@@ -22,6 +22,7 @@ export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
   const [time, setTime] = useState<string>('');
   const [animationData, setAnimationData] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [suggestedTimes, setSuggestedTimes] = useState<string[]>([]);
 
   useEffect(() => {
     fetch('https://lottie.host/5a2d67a9-2d14-41d3-a3d5-738982a8947e/n4Z1Z9I1yD.json')
@@ -29,6 +30,30 @@ export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
       .then(data => setAnimationData(data))
       .catch(err => console.error('Failed to load Lottie animation:', err));
   }, []);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!user) return;
+      const q = query(collection(db, 'bookings'), where('clientId', '==', user.uid));
+      const querySnapshot = await getDocs(q);
+      const bookings = querySnapshot.docs.map(doc => doc.data());
+      
+      if (bookings.length > 0) {
+        const timeFrequency: Record<string, number> = {};
+        bookings.forEach(b => {
+          timeFrequency[b.time] = (timeFrequency[b.time] || 0) + 1;
+        });
+        
+        // Suggest times with highest frequency
+        const sorted = Object.entries(timeFrequency)
+            .sort((a, b) => b[1] - a[1])
+            .map(x => x[0])
+            .slice(0, 2);
+        setSuggestedTimes(sorted);
+      }
+    };
+    fetchHistory();
+  }, [user]);
 
   const nextStep = () => setStep(s => s + 1);
 
@@ -253,6 +278,7 @@ export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
                   onDateChange={(d) => setDate(d ? d.toISOString().split('T')[0] : '')}
                   onTimeChange={setTime}
                   availableTimes={['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM', '06:00 PM']}
+                  suggestedTimes={suggestedTimes}
                 />
 
                 <button 
@@ -358,8 +384,10 @@ export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
             {step === 6 && (
               <motion.div 
                 key="step6"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col items-center justify-center text-center py-10 space-y-12"
               >
                 <div className="w-64 h-64 relative">

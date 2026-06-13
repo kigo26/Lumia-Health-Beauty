@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SERVICES, MOCK_PROVIDERS, MOCK_CENTERS, LUMIA_RITUALS } from '../data';
+import { FilterSidebar } from '../components/FilterSidebar';
 import { ServiceCard, ProviderCard, CenterCard, ProviderSkeleton, CenterSkeleton, RitualCard } from '../components/Cards';
 import { LazyLoadWrapper } from '../components/LazyLoadWrapper';
 import { RitualCompareModal } from '../components/RitualCompareModal';
@@ -9,7 +10,7 @@ import { ProviderProfile } from '../components/ProviderProfile';
 import { WellnessAssessment } from '../components/WellnessAssessment';
 import { SanctuaryMap } from '../components/SanctuaryMap';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, Filter, Map as MapIcon, Sparkles, Search, Shield, LayoutGrid } from 'lucide-react';
+import { Sparkles, Search, Shield, LayoutGrid, Map as MapIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 import { useSearch } from '../context/SearchContext';
@@ -200,31 +201,14 @@ export const Marketplace = () => {
       </section>
 
       <div className="flex flex-col lg:grid lg:grid-cols-4 gap-12 md:gap-20">
-        {/* Sidebar categories */}
+        {/* Sidebar */}
         <aside className="space-y-8 md:space-y-12">
-          <section>
-            <h3 className="text-[9px] md:text-[10px] uppercase tracking-[0.4em] font-bold text-serene-dark/50 mb-6 md:mb-8">Sanctuary Rituals</h3>
-            <div className="grid grid-cols-2 lg:flex lg:flex-col gap-3 md:gap-4">
-              {SERVICES.map((cat, i) => (
-                <motion.button 
-                  key={cat.id} 
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + (i * 0.05) }}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={cn(
-                    "p-4 md:p-6 rounded-2xl md:rounded-[1.5rem] border flex items-center justify-between group cursor-pointer transition-all duration-500 text-left",
-                    activeCategory === cat.id 
-                      ? "bg-serene-dark text-serene-accent border-serene-dark shadow-xl" 
-                      : "bg-white border-black/5 text-serene-dark/80 hover:bg-serene-sage/5 hover:border-serene-sage/20"
-                  )}
-                >
-                  <span className="text-[10px] md:text-sm font-bold tracking-tight">{cat.name}</span>
-                  <ChevronRight className={cn("hidden md:block w-4 h-4 opacity-20 transition-all", activeCategory === cat.id ? "opacity-100 translate-x-1" : "group-hover:opacity-100")} />
-                </motion.button>
-              ))}
-            </div>
-          </section>
+          <FilterSidebar 
+            activeCategory={activeCategory} 
+            setActiveCategory={setActiveCategory}
+            sortByDistance={sortByDistance}
+            setSortByDistance={setSortByDistance}
+          />
 
           <WellnessAssessment />
 
@@ -312,7 +296,7 @@ export const Marketplace = () => {
                       <span className="text-[9px] font-bold uppercase tracking-widest">Global Data Synced</span>
                     </div>
                   </header>
-                  <SanctuaryMap />
+                  <SanctuaryMap userLocation={userLocation} />
                 </section>
               </motion.div>
             ) : (
