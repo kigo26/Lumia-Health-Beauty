@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Sparkles, Shield, User, Landmark, Briefcase } from 'lucide-react';
+import { BackButton } from '../components/BackButton';
 import { signInWithGoogle, getRedirectResult, auth, ensureUserProfile } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -44,6 +45,7 @@ export const Login = () => {
 
   return (
     <div className="min-h-screen bg-tranquil-cream flex items-center justify-center px-6 py-12">
+      <BackButton />
       <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-black/5">
         
         {/* Left Side: Brand/Visual */}

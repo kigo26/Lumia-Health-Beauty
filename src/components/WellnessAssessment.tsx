@@ -69,9 +69,9 @@ export const WellnessAssessment = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[500px] bg-white rounded-[3rem] shadow-2xl z-[101] overflow-hidden flex flex-col"
+              className="fixed inset-4 max-h-[90vh] md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[500px] bg-white rounded-[3rem] shadow-2xl z-[101] overflow-hidden flex flex-col"
             >
-              <div className="p-8 md:p-12">
+              <div className="p-8 md:p-12 overflow-y-auto">
                 <div className="flex justify-between items-center mb-10">
                   <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-tranquil-teal/80">Biological Check-in</span>
                   <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-black/5 rounded-full transition-colors">

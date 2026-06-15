@@ -162,3 +162,24 @@ export const MOCK_REVIEWS: Review[] = [
     createdAt: '2024-05-20T14:30:00Z'
   }
 ];
+
+export const TESTIMONIALS = [
+  {
+    id: 't1',
+    name: 'Maya J.',
+    role: 'Wellness Enthusiast',
+    quote: 'The Lumia experience has completely transformed my weekly recovery routine. Absolute serenity.',
+  },
+  {
+    id: 't2',
+    name: 'Samuel K.',
+    role: 'Marathon Runner',
+    quote: 'As an athlete, the deep renewal rituals here are unmatched. My recovery time has halved.',
+  },
+  {
+    id: 't3',
+    name: 'Dr. Linda M.',
+    role: 'Physician',
+    quote: 'I recommend Lumia to all my patients. It is a true benchmark for holistic care in Nairobi.',
+  }
+];

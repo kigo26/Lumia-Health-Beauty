@@ -3,6 +3,7 @@ import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Plus, History, Shiel
 import { motion } from 'motion/react';
 import { formatCurrency } from '../lib/utils';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BackButton } from '../components/BackButton';
 import { db } from '../lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
@@ -60,7 +61,8 @@ export const Wallet = () => {
   };
 
   return (
-    <div className="pb-32 pt-24 md:pt-32 px-4 md:px-8 max-w-[1600px] mx-auto">
+    <div className="pb-32 min-h-screen pt-24 bg-tranquil-cream md:pt-32 px-4 md:px-8 max-w-[1600px] mx-auto">
+      <BackButton />
       <header className="mb-12 md:mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-black/5 pb-10">
         <div>
           <h1 className="text-4xl md:text-8xl font-serif tracking-tight text-serene-dark leading-[0.9] md:leading-[0.85]">

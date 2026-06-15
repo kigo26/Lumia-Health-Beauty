@@ -1,18 +1,24 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { Printer, Calendar, MapPin, Clock, Edit3 } from 'lucide-react';
+import { Printer, Calendar, MapPin, Clock, Edit3, Smartphone, Bell } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'react-hot-toast';
 import { RescheduleModal } from '../components/RescheduleModal';
+import { BackButton } from '../components/BackButton';
 
-const MOCK_BOOKINGS = [
-  { id: '1', service: 'Deep Tissue Recovery', date: 'June 15, 2026', time: '10:00 AM', center: 'Emerald Zen Spa', status: 'Confirmed' },
-  { id: '2', service: 'Aromatherapy Session', date: 'June 20, 2026', time: '02:00 PM', center: 'Pearl Wellness', status: 'Pending' },
-];
 
 export const Bookings = () => {
   const componentRef = useRef<HTMLDivElement>(null);
+  const [bookings, setBookings] = useState([
+    { id: '1', service: 'Deep Tissue Recovery', date: 'June 15, 2026', time: '10:00 AM', center: 'Emerald Zen Spa', status: 'Confirmed', sms: false, push: false },
+    { id: '2', service: 'Aromatherapy Session', date: 'June 20, 2026', time: '02:00 PM', center: 'Pearl Wellness', status: 'Pending', sms: true, push: true },
+  ]);
   const [rescheduleBooking, setRescheduleBooking] = useState<any>(null);
+
+  const toggleNotification = (id: string, type: 'sms' | 'push') => {
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, [type]: !b[type] } : b));
+    toast.success(`${type.toUpperCase()} notifications ${bookings.find(b => b.id === id)?.[type] ? 'disabled' : 'enabled'}`);
+  };
 
   const handlePrint = (booking: any) => {
     const printWindow = window.open('', '_blank');
@@ -49,17 +55,29 @@ export const Bookings = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-24 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-tranquil-cream pt-24 px-6 md:px-12 max-w-7xl mx-auto">
+      <BackButton />
       <h1 className="text-4xl md:text-6xl font-serif italic text-serene-dark mb-12">Your Sanctuary Bookings</h1>
       <div className="space-y-6">
-        {MOCK_BOOKINGS.map((booking) => (
+        {bookings.map((booking) => (
           <div key={booking.id} className="p-8 bg-white rounded-[2rem] border border-black/5 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-lg transition-all">
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-serene-dark">{booking.service}</h3>
-              <div className="flex items-center gap-4 text-xs text-serene-dark/60 font-medium">
-                <span className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {booking.date}</span>
-                <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> {booking.time}</span>
-                <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3" /> {booking.center}</span>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-serene-dark">{booking.service}</h3>
+                <div className="flex items-center gap-4 text-xs text-serene-dark/60 font-medium">
+                  <span className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {booking.date}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> {booking.time}</span>
+                  <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3" /> {booking.center}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                 <button onClick={() => toggleNotification(booking.id, 'sms')} className={cn("p-2 rounded-full", booking.sms ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-400")}>
+                    <Smartphone className="w-4 h-4" />
+                 </button>
+                 <button onClick={() => toggleNotification(booking.id, 'push')} className={cn("p-2 rounded-full", booking.push ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-400")}>
+                    <Bell className="w-4 h-4" />
+                 </button>
+                 <span className="text-[10px] font-bold text-serene-dark/40 uppercase tracking-widest pl-2">Notifications</span>
               </div>
             </div>
             <div className="flex items-center gap-4">

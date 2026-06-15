@@ -42,6 +42,7 @@
 @layer base {
   body {
     @apply bg-lumia-bg text-lumia-text font-sans antialiased selection:bg-aura-beige/40;
+    overflow-x: hidden;
   }
 }
 

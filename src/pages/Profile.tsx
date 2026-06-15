@@ -5,6 +5,7 @@ import { RitualProgress } from '../components/RitualProgress';
 import { MetricChart } from '../components/MetricChart';
 import { WellnessGoalsProgress } from '../components/WellnessGoalsProgress';
 import { RewardsSummary } from '../components/RewardsSummary';
+import { BackButton } from '../components/BackButton';
 import { useAuth } from '../contexts/AuthContext';
 import { db, logout } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -39,8 +40,9 @@ export const Profile = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="pb-32 pt-24 md:pt-32 px-4 md:px-8 max-w-[1400px] mx-auto"
+      className="pb-32 min-h-screen pt-24 bg-tranquil-cream md:pt-32 px-4 md:px-8 max-w-[1400px] mx-auto"
     >
+      <BackButton />
       <header className="flex flex-col md:flex-row items-start md:items-center gap-8 mb-20">
         <div className="relative">
           <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-tranquil-teal/10 flex items-center justify-center border border-tranquil-teal/20 overflow-hidden">

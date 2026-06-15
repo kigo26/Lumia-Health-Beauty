@@ -12,6 +12,7 @@ import { SanctuaryMap } from '../components/SanctuaryMap';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Search, Shield, LayoutGrid, Map as MapIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { BackButton } from '../components/BackButton';
 
 import { useSearch } from '../context/SearchContext';
 import Fuse from 'fuse.js';
@@ -132,6 +133,7 @@ export const Marketplace = () => {
       className="min-h-screen font-sans antialiased pb-32 pt-24 md:pt-32 px-4 md:px-8 max-w-[1600px] mx-auto"                
       style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=2000')`, backgroundAttachment: 'fixed', backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
+      <BackButton />
       {/* Header Info */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12 md:mb-24">
         <motion.div 

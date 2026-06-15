@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { 
   ShieldCheck, Sparkles, HeartPulse, ArrowUpRight, 
   Award, Globe, CheckCircle2, ChevronRight, Zap,
@@ -13,12 +13,42 @@ import { TestimonialCarousel } from '../components/TestimonialCarousel';
 import { useAuth } from '../contexts/AuthContext';
 import { logout } from '../lib/firebase';
 
-import spaDetail from '../assets/images/spa_detail_1780691428480.png';
-import spaFacial from '../assets/images/spa_facial_1780691447919.png';
-import spaCandle from '../assets/images/spa_candle_1780691461660.png';
-import spaBackground from '../assets/images/spa_background_1780691676574.png';
-import lumiaLogo from '../assets/images/lumia_logo_mockup_1780881339195.png';
+import swedishMassage from '../assets/images/swedish_massage.jpg';
+import hotStoneMassage from '../assets/images/hot_stone_massage.webp';
+import candleImage from '../assets/images/candle.jpg';
+import wellnessAnalyzerImage from '../assets/images/wellness_analyzer.webp';
+import emeraldZenImage from '../assets/images/emerald_zen.jpeg';
+import sarahJohnsonImage from '../assets/images/sarah_johnson.webp';
+import elenaRodriguezImage from '../assets/images/elena_rodrigez.webp';
+import michaelChenImage from '../assets/images/michael_dan.webp';
+import davidKojoImage from '../assets/images/david_kojo.jpg';
+import spaBackground from '../assets/images/spa_background.png';
+import spaCandle from '../assets/images/spa_candle.png';
+import spaDetail from '../assets/images/spa_detail.png';
+import spaFacial from '../assets/images/spa_facial.png';
+import lumiaSpaHeader from '../assets/images/lumia_spa_header.png';
 
+
+const ParallaxImage = ({ src, alt, className }: { src: string, alt: string, className?: string }) => {
+  const ref = React.useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+
+  return (
+    <div ref={ref} className="absolute inset-0 overflow-hidden w-full h-full">
+      <motion.img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        style={{ y }}
+        className={cn("absolute w-full h-[130%] -top-[15%] object-cover", className)}
+      />
+    </div>
+  );
+};
 
 const MoodCard = ({ children, className, delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
   <motion.div
@@ -36,7 +66,7 @@ export const Landing = () => {
   const { user, profile } = useAuth();
 
   return (
-    <div className="min-h-screen font-sans antialiased text-tranquil-text selection:bg-tranquil-teal/10" style={{ backgroundImage: `url(${spaBackground})`, backgroundAttachment: 'fixed', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div className="min-h-screen font-sans antialiased text-tranquil-text selection:bg-tranquil-teal/10 bg-tranquil-cream">
       {/* Announcement Bar */}
       <div className="bg-tranquil-teal text-white py-2 text-center text-[10px] md:text-xs font-medium tracking-wider">
         Relax, rejuvenate, and restore — enjoy exclusive massage deals this week only!
@@ -45,9 +75,9 @@ export const Landing = () => {
       {/* Header */}
       <nav className="bg-white border-b border-black/5 px-4 md:px-12 py-4">
         <div className="max-w-[1800px] mx-auto flex items-center justify-between">
-          {/* Logo */}
+      {/* Logo */}
           <Link to="/" className="text-xl md:text-2xl font-serif text-tranquil-teal tracking-tight font-medium">
-            <img src={lumiaLogo} alt="Lumia Beauty & Health Spa" className="h-10 md:h-12 w-auto" />
+            Lumia
           </Link>
 
           {/* Menu */}
@@ -94,10 +124,10 @@ export const Landing = () => {
 
       {/* Hero Section */}
       <section className="relative h-[600px] md:h-[800px] bg-black overflow-hidden">
-        <img 
+        <ParallaxImage 
           src="https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=2000" 
           alt="Spa Treatment" 
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          className="opacity-60"
         />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-[1800px] mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-2 items-center gap-12">
@@ -143,7 +173,7 @@ export const Landing = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="absolute top-0 right-10 w-[300px] aspect-[4/3] rounded-sm overflow-hidden border-4 border-white/20 shadow-2xl z-10"
               >
-                <img src={spaDetail} className="w-full h-full object-cover" alt="Detail" />
+                <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" alt="Detail" loading="lazy" />
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -151,7 +181,7 @@ export const Landing = () => {
                 transition={{ delay: 0.3 }}
                 className="absolute top-1/2 left-0 -translate-y-1/2 w-[350px] aspect-[4/5] rounded-sm overflow-hidden border-4 border-white/20 shadow-2xl z-20"
               >
-                <img src={spaFacial} className="w-full h-full object-cover" alt="Facial" />
+                <img src={candleImage} className="w-full h-full object-cover" alt="Facial" loading="lazy" />
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -159,7 +189,7 @@ export const Landing = () => {
                 transition={{ delay: 0.6 }}
                 className="absolute bottom-0 right-0 w-[250px] aspect-square rounded-sm overflow-hidden border-4 border-white/20 shadow-2xl z-10"
               >
-                <img src={spaCandle} className="w-full h-full object-cover" alt="Candle" />
+                <img src="https://images.unsplash.com/photo-1519415510236-85155f82b9c3?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" alt="Candle" loading="lazy" />
               </motion.div>
               
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-30">
@@ -183,7 +213,7 @@ export const Landing = () => {
             {
               title: "Swedish Massage",
               desc: "Experience ultimate relaxation with long, gliding strokes designed to ease tension and improve circulation.",
-              image: "https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800"
+              image: swedishMassage
             },
             {
               title: "Deep Tissue Massage",
@@ -198,7 +228,7 @@ export const Landing = () => {
             {
               title: "Hot Stone Massage",
               desc: "Melt away stress with heated volcanic stones placed strategically to release deep-seated tension.",
-              image: "https://images.unsplash.com/photo-1519415510236-85155f82b9c3?auto=format&fit=crop&q=80&w=800"
+              image: hotStoneMassage
             }
           ].map((service, i) => (
             <motion.div 
@@ -208,10 +238,10 @@ export const Landing = () => {
               transition={{ delay: i * 0.1 }}
               className="group relative aspect-[3/4] overflow-hidden cursor-pointer"
             >
-              <img 
+              <ParallaxImage 
                 src={service.image} 
                 alt={service.title} 
-                className="absolute inset-0 w-full h-full object-cover grayscale-[0.2] transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0" 
+                className="grayscale-[0.2] transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-tranquil-teal/90 via-tranquil-teal/20 to-transparent transition-opacity duration-500"></div>
               
@@ -234,8 +264,17 @@ export const Landing = () => {
       </section>
 
       {/* Assessment Section */}
-      <section className="py-24 md:py-40 px-6 md:px-12 bg-sky-50 flex flex-col items-center">
-        <div className="max-w-2xl w-full">
+      <section 
+        className="py-24 md:py-40 px-6 md:px-12 flex flex-col items-center relative"
+        style={{
+          backgroundImage: `url(${wellnessAnalyzerImage})`,
+          backgroundAttachment: 'fixed',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
+        }}
+      >
+        <div className="absolute inset-0 bg-sky-50/80 z-0"></div>
+        <div className="max-w-2xl w-full z-10 relative">
            <div className="text-center mb-16 space-y-4">
              <span className="text-[10px] uppercase tracking-[0.3em] text-tranquil-teal font-bold">Bespoke Intelligence</span>
              <h2 className="text-3xl md:text-5xl font-serif text-tranquil-text italic">Lumia Wellness Analyzer</h2>
@@ -254,14 +293,13 @@ export const Landing = () => {
         <div className="max-w-[1800px] mx-auto">
           <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-24">
             <div className="max-w-2xl">
-              <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-tranquil-teal mb-6">Global Registry</p>
-              <h2 className="text-4xl md:text-7xl font-serif text-tranquil-text leading-tight">
-                Our Top <br />
+               <h2 className="text-4xl md:text-7xl font-serif text-tranquil-text leading-tight">
+                
                 <span className="italic">Sanctuaries</span> & Experts
               </h2>
             </div>
             <Link to="/explore" className="group flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-tranquil-teal">
-              View Full Registry <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              Explore <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </Link>
           </header>
 
@@ -270,11 +308,12 @@ export const Landing = () => {
             <div className="space-y-12">
               <div className="flex items-center gap-4 border-b border-black/5 pb-6">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-tranquil-teal/40">01</span>
-                <h3 className="text-xl font-serif text-tranquil-text italic">Premium Sanctuaries</h3>
+                <h3 className="text-xl font-serif text-tranquil-text italic">Lumia Sanctuaries</h3>
               </div>
               <div className="grid grid-cols-1 gap-8">
                 {[
-                  { name: "Emerald Zen Spa", loc: "Riverside, Nairobi", img: "https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800", rating: "4.9" },
+                  { name: "Emerald Zen Spa", loc: "Riverside, Nairobi", img: emeraldZenImage, rating: "4.9" },
+                  
                   { name: "Sapphire Sanctuary", loc: "Karen, Nairobi", img: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800", rating: "5.0" }
                 ].map((center, i) => (
                   <motion.div 
@@ -283,7 +322,7 @@ export const Landing = () => {
                     className="group cursor-pointer"
                   >
                     <div className="relative aspect-video rounded-[2.5rem] overflow-hidden mb-6 shadow-xl">
-                      <img src={center.img} alt={center.name} className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" />
+                      <ParallaxImage src={center.img} alt={center.name} className="grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" />
                       <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
                         <Award className="w-4 h-4 text-tranquil-teal" />
                         <span className="text-[10px] font-bold uppercase tracking-widest text-tranquil-teal">Gold Class</span>
@@ -312,10 +351,10 @@ export const Landing = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 {[
-                  { name: "Sarah Johnson", role: "Massage Master", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400", rating: "4.9" },
-                  { name: "Elena Rodriguez", role: "Aesthetic Artisan", img: "https://images.unsplash.com/photo-1594744803329-a584af1eb518?auto=format&fit=crop&q=80&w=400", rating: "5.0" },
-                  { name: "Michael Chen", role: "Physio Specialist", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400", rating: "4.8" },
-                  { name: "David Kojo", role: "Senior Practitioner", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", rating: "4.7" }
+                  { name: "Sarah Johnson", role: "Massage Master", img: sarahJohnsonImage, rating: "4.9" },
+                  { name: "Elena Rodriguez", role: "Aesthetic Artisan", img: elenaRodriguezImage, rating: "5.0" },
+                  { name: "Michael Chen", role: "Physio Specialist", img: michaelChenImage, rating: "4.8" },
+                  { name: "David Kojo", role: "Senior Practitioner", img: davidKojoImage, rating: "4.7" }
                 ].map((artisan, i) => (
                   <motion.div 
                     key={i}
@@ -323,7 +362,7 @@ export const Landing = () => {
                     className="flex flex-col items-center text-center group cursor-pointer"
                   >
                     <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden mb-6 border-4 border-tranquil-cream shadow-2xl">
-                      <img src={artisan.img} alt={artisan.name} className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700" />
+                      <img src={artisan.img} alt={artisan.name} loading="lazy" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 hover:scale-105" />
                     </div>
                     <h4 className="text-xl font-serif text-tranquil-text italic group-hover:text-tranquil-teal transition-colors">{artisan.name}</h4>
                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1 mb-3">{artisan.role}</p>
@@ -343,9 +382,9 @@ export const Landing = () => {
       <section className="py-24 md:py-40 bg-tranquil-cream">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
           <div className="text-center mb-20">
-            <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-tranquil-teal/70 mb-6">Exclusive Branded Experiences</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-tranquil-teal/70 mb-6">Exclusive Lumia Experiences</p>
             <h2 className="text-4xl md:text-6xl font-serif text-tranquil-text leading-tight">
-              Premium <span className="italic">Lumia</span> Signature Collection
+              Experience <span className="italic">the Lumia</span> Lifestyle
             </h2>
           </div>
 
@@ -354,42 +393,42 @@ export const Landing = () => {
               { 
                 name: "Lumia Serenity Ritual™", 
                 desc: "A ethereal deep-relaxation protocol.",
-                image: "https://images.unsplash.com/photo-1544161515-4ae6ce6db87e?auto=format&fit=crop&q=80&w=800"
+                image: spaBackground
               },
               { 
                 name: "Lumia Emerald Escape™", 
                 desc: "Nature-infused restorative therapy.",
-                image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=800"
+                image: emeraldZenImage
               },
               { 
                 name: "Lumia Deep Renewal™", 
                 desc: "Advanced cellular recovery session.",
-                image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800"
+                image: spaFacial
               },
               { 
                 name: "Lumia Golden Harmony™", 
                 desc: "The ultimate balance and flow ritual.",
-                image: "https://images.unsplash.com/photo-1519415510236-85155f82b9c3?auto=format&fit=crop&q=80&w=800"
+                image: hotStoneMassage
               },
               { 
                 name: "Lumia Signature Wellness Journey™", 
                 desc: "A bespoke multi-modal experience.",
-                image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800"
+                image: spaDetail
               },
               { 
                 name: "Lumia Stress Reset Experience™", 
                 desc: "Rapid nervous system regulation.",
-                image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=800"
+                image: spaCandle
               },
               { 
                 name: "Lumia Ultimate Recovery Ritual™", 
                 desc: "High-performance body restoration.",
-                image: "https://images.unsplash.com/photo-1594434057390-1c944eb98471?auto=format&fit=crop&q=80&w=800"
+                image: swedishMassage
               },
               { 
                 name: "Lumia Couples Sanctuary Experience™", 
                 desc: "Shared tranquility for two.",
-                image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800"
+                image: lumiaSpaHeader
               }
             ].map((item, i) => (
               <motion.div 
@@ -397,26 +436,27 @@ export const Landing = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="relative aspect-[4/5] overflow-hidden group cursor-pointer"
+                className="group cursor-pointer bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col"
               >
-                <img 
-                  src={item.image} 
-                  alt={item.name} 
-                  className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
-                />
-                <div className="absolute inset-0 bg-tranquil-teal/80 group-hover:bg-tranquil-teal/40 transition-colors duration-500"></div>
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <ParallaxImage 
+                    src={item.image} 
+                    alt={item.name} 
+                    className="group-hover:scale-[1.03] transition-transform duration-1000"
+                  />
+                </div>
                 
-                <div className="absolute inset-0 p-8 md:p-12 flex flex-col">
-                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-auto group-hover:scale-110 transition-transform">
-                    <Sparkles className="w-5 h-5 text-white/60" />
+                <div className="p-8 flex flex-col flex-grow">
+                  <div className="w-10 h-10 rounded-full bg-tranquil-cream flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-5 h-5 text-tranquil-teal" />
                   </div>
                   
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-serif text-white leading-tight">{item.name}</h3>
-                    <p className="text-xs text-white/60 leading-relaxed font-light line-clamp-2">{item.desc}</p>
-                    <div className="pt-4 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-y-4 group-hover:translate-y-0">
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-white">Book Ritual</span>
-                      <ChevronRight className="w-3 h-3 text-white" />
+                  <div className="space-y-3 mt-auto">
+                    <h3 className="text-xl font-serif text-tranquil-text leading-tight">{item.name}</h3>
+                    <p className="text-sm text-tranquil-text/70 leading-relaxed font-light line-clamp-2">{item.desc}</p>
+                    <div className="pt-4 flex items-center gap-3 text-tranquil-teal opacity-60 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[10px] font-bold uppercase tracking-widest">Book Ritual</span>
+                      <ChevronRight className="w-4 h-4" />
                     </div>
                   </div>
                 </div>
@@ -429,7 +469,7 @@ export const Landing = () => {
       <TestimonialCarousel />
       
       {/* Footer */}
-      <footer className="bg-tranquil-teal text-white py-24 px-12 md:px-24">
+      <footer className="bg-tranquil-teal text-white py-24 px-6 md:px-12 lg:px-24">
         <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
           <div className="space-y-8">
             <h2 className="text-2xl font-serif tracking-tight">Lumia Beauty & Health Spa</h2>

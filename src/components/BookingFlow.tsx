@@ -1,3 +1,4 @@
+import confetti from 'canvas-confetti';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Home, Landmark, Calendar, Clock, CreditCard, ChevronRight, Check, Shield, Sparkles } from 'lucide-react';
@@ -72,6 +73,11 @@ export const BookingFlow = ({ onClose }: { onClose: () => void }) => {
         createdAt: serverTimestamp()
       });
       nextStep();
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
     } catch (e) {
       console.error(e);
       toast.error('Booking failed.');
